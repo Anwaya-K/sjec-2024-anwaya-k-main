@@ -20,7 +20,7 @@ def main():
 
         music_files = list_music_files(directory)
         for file in music_files:
-            print(file)
+            print(Anti-Hero.mp3)
 
 if __name__ == "__main__":
     main()
