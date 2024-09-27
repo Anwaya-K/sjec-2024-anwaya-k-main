@@ -1,0 +1,70 @@
+import os
+import tinytag
+
+def group_by_artist(directory):
+    artists = {}
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(('.mp3', '.wav', '.ogg')):
+                file_path = os.path.join(root, file)
+                tag = tinytag.TinyTag.get(file_path)
+                artist = tag.artist
+                if artist not in artists:
+                    artists[artist] = []
+                artists[artist].append(file_path)
+    
+    for artist, files in artists.items():
+        print(f"{artist}:")
+        for file in files:
+            print(f"  {os.path.basename(file)}")
+
+def group_by_album(directory):
+    albums = {}
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(('.mp3', '.wav', '.ogg')):
+                file_path = os.path.join(root, file)
+                tag = tinytag.TinyTag.get(file_path)
+                album = tag.album
+                if album not in albums:
+                    albums[album] = []
+                albums[album].append(file_path)
+                for album, files in albums.items():
+            print(f"{album}:")
+        for file in files:
+            print(f"  {os.path.basename(file)}")
+
+def group_by_artist_album(directory):
+    artists_albums = {}
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(('.mp3', '.wav', '.ogg')):
+                file_path = os.path.join(root, file)
+                tag = tinytag.TinyTag.get(file_path)
+                artist = tag.artist
+                album = tag.album
+                if artist not in artists_albums:
+                    artists_albums[artist] = {}
+                if album not in artists_albums[artist]:
+                    artists_albums[artist][album] = []
+                artists_albums[artist][album].append(file_path)
+    
+    for artist, albums in artists_albums.items():
+        print(f"{artist}:")
+        for album, files in albums.items():
+            print(f"  {album}:")
+            for file in files:
+                print(f"    {os.path.basename(file)}")
+
+if __name__ == '__main__':
+parser = argparse.ArgumentParser()
+    parser.add_argument('--input', required=True)
+    parser.add_argument('--group-by', choices=['ARTIST', 'ALBUM', 'ARTIST_ALBUM'])
+    args = parser.parse_args()
+    
+    if args.group_by == 'ARTIST':
+        group_by_artist(args.input)
+    elif args.group_by == 'ALBUM':
+        group_by_album(args.input)
+    elif args.group_by == 'ARTIST_ALBUM':
+        group_by_artist_album(args.input)
